@@ -1,0 +1,63 @@
+name: CI - Reliability Lab (Python)
+
+on:
+  push: { branches: [ main ] }
+  pull_request: { branches: [ main ] }
+
+jobs:
+  test-and-healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Start app (background)
+        run: |
+          python main.py &
+          echo $! > app.pid
+          sleep 2
+
+      - name: Health-check (status)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
+          echo "HTTP $code"
+          test "$code" = "200"
+
+      - name: Health-check (latency SLO 200ms)
+        run: |
+          t=$(curl -s -w "%{time_total}" -o /dev/null http://localhost:8080/health)
+          echo "latency: ${t}s"
+          # bloqueia se > 0.2s (200ms)
+          python - << 'PY'
+import sys
+t=float(sys.argv[1])
+sys.exit(1 if t>0.2 else 0)
+PY
+          "$t"
+
+      - name: Simulate failure (HEALTH_FAIL=true → deve falhar)
+        run: |
+          kill "$(cat app.pid)" || true
+          HEALTH_FAIL=true python main.py &
+          echo $! > app.pid
+          sleep 2
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
+          echo "HTTP $code (esperado 500)"
+          test "$code" = "500"
+
+      - name: Stop app
+        if: always()
+        run: kill "$(cat app.pid)" || true
