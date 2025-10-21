@@ -25,7 +25,7 @@ e um pipeline **GitHub Actions** que:
 - Flask 3.0  
 - Pytest  
 - GitHub Actions  
-- Docker (opcional)
+- Docker e Docker Compose
 
 ---
 
@@ -124,6 +124,52 @@ docker run --rm -p 8080:8080 reliability-lab-py:1.0.0
 
 ---
 
+## ⚙️ Executando via Docker Compose
+
+Arquivo `docker-compose.yml`:
+
+```yaml
+version: "3.9"
+
+services:
+  reliability-lab:
+    build: .
+    container_name: reliability-lab
+    ports:
+      - "8080:8080"
+    environment:
+      SERVICE_NAME: reliability-lab-py
+      VERSION: 1.0.0
+      PORT: 8080
+      # Para simular falha no health-check, mude para "true"
+      HEALTH_FAIL: "false"
+```
+
+### Comandos úteis
+
+**Subir o serviço:**  
+```bash
+docker-compose up --build
+```
+
+**Testar o health-check:**  
+```bash
+curl -i http://localhost:8080/health
+```
+
+**Simular falha:**  
+```bash
+docker-compose down
+HEALTH_FAIL=true docker-compose up
+```
+
+**Parar:**  
+```bash
+docker-compose down
+```
+
+---
+
 ## 🧠 Para refletir
 
 - Seu pipeline atual valida a saúde da aplicação antes de liberar deploys?  
@@ -136,4 +182,5 @@ docker run --rm -p 8080:8080 reliability-lab-py:1.0.0
 
 > Integrar este lab ao conteúdo da aula **Princípios de Confiabilidade**,  
 > demonstrando o equilíbrio entre **velocidade de entrega** e **estabilidade operacional**.
+
 
