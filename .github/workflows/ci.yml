@@ -15,10 +15,6 @@ jobs:
           docker compose up --build -d
           sleep 2
 
-      - name: Show HEALTH_FAIL value (Docker Compose)
-        run: |
-          echo "HEALTH_FAIL in container: $(docker compose exec reliability-lab printenv HEALTH_FAIL)"
-
       - name: Health-check (status)
         run: |
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
