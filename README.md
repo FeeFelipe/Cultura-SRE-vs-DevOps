@@ -1,6 +1,6 @@
 # 🧪 Reliability Lab (Python)
 
-[![CI](https://github.com/fiap-sre-labs/reliability-lab-py/actions/workflows/ci.yml/badge.svg)](https://github.com/fiap-sre-labs/reliability-lab-py/actions)
+[CI](https://github.com/fiap-sre-labs/reliability-lab-py/actions)
 
 > Lab do módulo **Princípios de Confiabilidade**  
 > Demonstra como aplicar métricas de SRE em um pipeline CI/CD com health-check e rollback automático.
