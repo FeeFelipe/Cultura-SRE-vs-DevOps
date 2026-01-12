@@ -41,7 +41,7 @@ cd Cultura-SRE-vs-DevOps
 ### 2️⃣ Instalar dependências
 
 ```bash
-pip install -r requirements.txt
+docker compose up
 ```
 
 ### 3️⃣ Executar a aplicação
