@@ -11,4 +11,4 @@ services:
       # Para simular falha no health-check, defina HEALTH_FAIL=true ao rodar o comando ou mude aqui
       HEALTH_FAIL: "${HEALTH_FAIL:-false}"
       # Para simular latência, defina SLEEP_MS (ex: 250 para 250ms)
-      SLEEP_MS: 0
+      SLEEP_MS: 300
