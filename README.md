@@ -34,8 +34,8 @@ e um pipeline **GitHub Actions** que:
 ### 1️⃣ Clonar o repositório
 
 ```bash
-git clone https://github.com/fiap-sre-labs/reliability-lab-py.git
-cd reliability-lab-py
+git clone https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps.git
+cd Cultura-SRE-vs-DevOps
 ```
 
 ### 2️⃣ Instalar dependências
