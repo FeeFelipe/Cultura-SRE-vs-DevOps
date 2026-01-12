@@ -13,12 +13,16 @@ jobs:
       - name: Build Docker image
         working-directory: health
         run: |
-          docker build .
+          docker build -t reliability-lab-py:ci .
 
       - name: Start app (background, Docker)
         run: |
           docker run --rm -d -p 8080:8080 --name reliability-lab-py reliability-lab-py:ci
           sleep 2
+
+      - name: Show HEALTH_FAIL value (Docker)
+        run: |
+          echo "HEALTH_FAIL in container: $(docker exec reliability-lab-py printenv HEALTH_FAIL)"
 
       - name: Health-check (status)
         run: |
