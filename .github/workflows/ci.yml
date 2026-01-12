@@ -16,27 +16,32 @@ jobs:
           python-version: "3.11"
 
       - name: Install deps
+        working-directory: health
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run tests
+        working-directory: health
         run: pytest -q
 
       - name: Start app (background)
+        working-directory: health
         run: |
           python main.py &
           echo $! > app.pid
           sleep 2
 
       - name: Health-check (status)
+        working-directory: health
         run: |
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
           echo "HTTP $code"
           test "$code" = "200"
 
       - name: Health-check (latency SLO 200ms)
+        working-directory: health
         run: |
           t=$(curl -s -w "%{time_total}" -o /dev/null http://localhost:8080/health)
           echo "latency: ${t}s"
@@ -44,6 +49,7 @@ jobs:
           if (( $(echo "$t > 0.2" | bc -l) )); then exit 1; fi
 
       - name: Simulate failure (HEALTH_FAIL=true → deve falhar)
+        working-directory: health
         run: |
           kill "$(cat app.pid)" || true
           HEALTH_FAIL=true python main.py &
@@ -55,4 +61,5 @@ jobs:
 
       - name: Stop app
         if: always()
+        working-directory: health
         run: kill "$(cat app.pid)" || true
