@@ -13,7 +13,7 @@ jobs:
       - name: Build Docker image
         working-directory: health
         run: |
-          docker build -t reliability-lab-py:ci .
+          docker build -t .
 
       - name: Start app (background, Docker)
         run: |
