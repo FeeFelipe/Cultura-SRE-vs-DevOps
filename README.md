@@ -1,10 +1,5 @@
-[![CI](https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps/actions/workflows/ci.yml/badge.svg)](https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps/actions)
-
-> Lab do módulo **Princípios de Confiabilidade**  
-📄 [Ver arquivo do workflow](.github/workflows/ci.yml)
-
----
 # 🧪 Reliability Lab (Python)
+
 
 [![CI](https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps/actions/workflows/ci.yml/badge.svg)](https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps/actions)
 
