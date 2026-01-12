@@ -26,22 +26,23 @@ jobs:
         working-directory: health
         run: pytest -q
 
-      - name: Start app (background)
+      - name: Build Docker image
         working-directory: health
         run: |
-          python main.py &
-          echo $! > app.pid
+          docker build -t reliability-lab-py:ci .
+
+      - name: Start app (background, Docker)
+        run: |
+          docker run --rm -d -p 8080:8080 --name reliability-lab-py reliability-lab-py:ci
           sleep 2
 
       - name: Health-check (status)
-        working-directory: health
         run: |
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
           echo "HTTP $code"
           test "$code" = "200"
 
       - name: Health-check (latency SLO 200ms)
-        working-directory: health
         run: |
           t=$(curl -s -w "%{time_total}" -o /dev/null http://localhost:8080/health)
           echo "latency: ${t}s"
@@ -49,17 +50,14 @@ jobs:
           if (( $(echo "$t > 0.2" | bc -l) )); then exit 1; fi
 
       - name: Simulate failure (HEALTH_FAIL=true → deve falhar)
-        working-directory: health
         run: |
-          kill "$(cat app.pid)" || true
-          HEALTH_FAIL=true python main.py &
-          echo $! > app.pid
+          docker stop reliability-lab-py || true
+          docker run --rm -d -p 8080:8080 --name reliability-lab-py -e HEALTH_FAIL=true reliability-lab-py:ci
           sleep 2
           code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/health)
           echo "HTTP $code (esperado 500)"
           test "$code" = "500"
 
-      - name: Stop app
+      - name: Stop app (Docker)
         if: always()
-        working-directory: health
-        run: kill "$(cat app.pid)" || true
+        run: docker stop reliability-lab-py || true
