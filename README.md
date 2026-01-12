@@ -29,7 +29,8 @@ e um pipeline **GitHub Actions** que:
 
 ---
 
-## 🚀 Executando localmente
+
+## 🚀 Executando localmente (recomendado: Docker)
 
 ### 1️⃣ Clonar o repositório
 
@@ -38,23 +39,28 @@ git clone https://github.com/FeeFelipe/Cultura-SRE-vs-DevOps.git
 cd Cultura-SRE-vs-DevOps
 ```
 
-### 2️⃣ Instalar dependências
+### 2️⃣ Subir o serviço com Docker Compose
 
 ```bash
-docker compose up
-```
-
-### 3️⃣ Executar a aplicação
-
-```bash
-python main.py
-```
-
-### 4️⃣ Testar o endpoint `/health`
-
-```bash
+docker compose up --build -d
 curl -i http://localhost:8080/health
 ```
+
+O serviço estará disponível em http://localhost:8080/health
+
+---
+
+## ⚙️ Execução opcional sem Docker
+
+Se preferir rodar fora de container (apenas para fins de estudo):
+
+```bash
+cd health
+pip install -r requirements.txt
+python main.py
+curl -i http://localhost:8080/health
+```
+O serviço estará disponível em http://localhost:8080/health
 
 **Resposta esperada:**
 
@@ -71,8 +77,17 @@ curl -i http://localhost:8080/health
 
 ## 💥 Simular falha
 
+
 Para testar o comportamento de erro (retorno HTTP 500):
 
+**Com Docker Compose:**
+```bash
+docker compose down
+HEALTH_FAIL=true docker compose up --build -d
+curl -i http://localhost:8080/health
+```
+
+**Sem Docker (execução direta):**
 ```bash
 HEALTH_FAIL=true python main.py
 curl -i http://localhost:8080/health
@@ -87,16 +102,6 @@ curl -i http://localhost:8080/health
   "version": "1.0.0",
   "timestamp": "2025-10-20T18:00:00Z"
 }
-```
-
----
-
-## 🧩 Testes automatizados
-
-Execute os testes com **pytest**:
-
-```bash
-pytest -v
 ```
 
 ---
@@ -117,7 +122,9 @@ O workflow `.github/workflows/ci.yml` realiza:
 
 ## 🐳 Executando via Docker
 
+
 ```bash
+cd health
 docker build -t reliability-lab-py:1.0.0 .
 docker run --rm -p 8080:8080 reliability-lab-py:1.0.0
 ```
@@ -126,14 +133,15 @@ docker run --rm -p 8080:8080 reliability-lab-py:1.0.0
 
 ## ⚙️ Executando via Docker Compose
 
-Arquivo `docker-compose.yml`:
+
+O serviço é definido em `docker-compose.yml` na raiz do projeto:
 
 ```yaml
 version: "3.9"
 
 services:
   reliability-lab:
-    build: .
+    build: ./health
     container_name: reliability-lab
     ports:
       - "8080:8080"
@@ -148,8 +156,9 @@ services:
 ### Comandos úteis
 
 **Subir o serviço:**  
+
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 **Testar o health-check:**  
@@ -158,14 +167,16 @@ curl -i http://localhost:8080/health
 ```
 
 **Simular falha:**  
+
 ```bash
-docker-compose down
-HEALTH_FAIL=true docker-compose up
+docker compose down
+HEALTH_FAIL=true docker compose up
 ```
 
 **Parar:**  
+
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ---

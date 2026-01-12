@@ -11,7 +11,8 @@ PORT = int(os.getenv("PORT", "8080"))
 @app.get("/health")
 def health():
     # Para o lab: simular falha definindo HEALTH_FAIL=true (retorna 500)
-    if os.getenv("HEALTH_FAIL", "false").lower() == "true":
+    health_fail = os.getenv("HEALTH_FAIL", "false").lower()
+    if health_fail == "true":
         return jsonify({
             "status": "DOWN",
             "service": SERVICE,
