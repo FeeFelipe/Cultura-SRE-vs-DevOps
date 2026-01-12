@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import time
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -10,6 +11,11 @@ PORT = int(os.getenv("PORT", "8080"))
 
 @app.get("/health")
 def health():
+    # Simula latência se SLEEP_MS estiver definido
+    sleep_ms = int(os.getenv("SLEEP_MS", "0"))
+    if sleep_ms > 0:
+        time.sleep(sleep_ms / 1000)
+
     health_fail = os.getenv("HEALTH_FAIL", "false").lower()
     if health_fail == "true":
         return jsonify({
