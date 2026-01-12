@@ -41,12 +41,7 @@ jobs:
           t=$(curl -s -w "%{time_total}" -o /dev/null http://localhost:8080/health)
           echo "latency: ${t}s"
           # bloqueia se > 0.2s (200ms)
-          python - << 'PY'
-import sys
-t=float(sys.argv[1])
-sys.exit(1 if t>0.2 else 0)
-PY
-          "$t"
+          if (( $(echo "$t > 0.2" | bc -l) )); then exit 1; fi
 
       - name: Simulate failure (HEALTH_FAIL=true → deve falhar)
         run: |
