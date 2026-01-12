@@ -13,7 +13,7 @@ jobs:
       - name: Build Docker image
         working-directory: health
         run: |
-          docker build -t .
+          docker build .
 
       - name: Start app (background, Docker)
         run: |
