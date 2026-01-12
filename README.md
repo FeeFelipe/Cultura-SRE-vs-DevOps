@@ -19,7 +19,15 @@ e um pipeline **GitHub Actions** que:
 ---
 
 ## ⚙️ Tecnologias
+Se preferir rodar fora de container (apenas para fins de estudo): 
 
+**Rodar testes automatizados:**
+
+```bash
+cd health
+pytest -v
+```
+O arquivo de teste básico está em `health/test_health.py` e cobre o endpoint `/health`.
 - Python 3.11  
 - Flask 3.0  
 - Pytest  
@@ -76,7 +84,7 @@ O serviço estará disponível em http://localhost:8080/health
 
 ## 💥 Simular falha
 
-
+O workflow `.github/workflows/ci.yml` executa automaticamente no GitHub Actions a cada push ou pull request para o branch main:
 Para testar o comportamento de erro (retorno HTTP 500):
 
 **Com Docker Compose:**
@@ -86,7 +94,6 @@ HEALTH_FAIL=true docker compose up --build -d
 curl -i http://localhost:8080/health
 ```
 
-**Sem Docker (execução direta):**
 ```bash
 HEALTH_FAIL=true python main.py
 curl -i http://localhost:8080/health
