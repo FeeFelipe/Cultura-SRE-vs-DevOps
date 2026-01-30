@@ -17,7 +17,7 @@ def health():
         time.sleep(sleep_ms / 1000)
 
     health_fail = os.getenv("HEALTH_FAIL", "false").lower()
-    if health_fail == "false":
+    if health_fail == "true":
         return jsonify({
             "status": "DOWN",
             "service": SERVICE,
