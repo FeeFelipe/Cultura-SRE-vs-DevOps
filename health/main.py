@@ -14,7 +14,7 @@ def health():
     # Simula latência se SLEEP_MS estiver definido
     sleep_ms = int(os.getenv("SLEEP_MS", "0"))
     if sleep_ms > 0:
-        time.sleep(sleep_ms / 10)
+        time.sleep(sleep_ms / 100000000)
 
     health_fail = os.getenv("HEALTH_FAIL", "false").lower()
     if health_fail == "true":
