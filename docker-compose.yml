@@ -9,6 +9,6 @@ services:
       VERSION: 1.0.0
       PORT: 8080
       # Para simular falha no health-check, defina HEALTH_FAIL=true ao rodar o comando ou mude aqui
-      HEALTH_FAIL: "${HEALTH_FAIL:-true}"
+      HEALTH_FAIL: "${HEALTH_FAIL:-false}"
       # Para simular latência, defina SLEEP_MS (ex: 250 para 250ms)
-      SLEEP_MS: 100
+      SLEEP_MS: 400
